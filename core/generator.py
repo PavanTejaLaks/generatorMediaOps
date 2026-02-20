@@ -1,11 +1,10 @@
 import requests
 
 from core.platform_rules import PLATFORM_RULES
+from core.language import get_language_name
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL_NAME = "mistral"
 
-def build_prompt(headline, intent, platform, platform_plan, context= None, source = None):
+def build_prompt(headline, intent, platform, platform_plan,language = "en", context= None, source = None, geo_location=None):
     ## Buiding a structured prompt
     target_length = platform_plan["target_length"]
     tone_bias = platform_plan["tone_bias"]
@@ -21,9 +20,11 @@ def build_prompt(headline, intent, platform, platform_plan, context= None, sourc
     Platform : {platform}
     Tone : {tone_bias}
     Target length : approx {target_length} characters
+    Target Language : {get_language_name(language)}
     Hashtags: between {hashtag_min} and {hashtag_max}
     Additional context : {context if context else "None"}
     source (if any) : {source if source else "None"}
+    Location: {geo_location if geo_location else "Not specified"}
 
     Rules: 1. Never Fabricate the facts,
         2. If source is provided, include attribution.
@@ -31,33 +32,12 @@ def build_prompt(headline, intent, platform, platform_plan, context= None, sourc
         4.Maintain as instructed
         5.Maintain only final output text.
         6. Do not lie
+        7. The entire output MUST be written in {get_language_name(language)}.
+        8. If the output is not in {language}, regenerate internally before returning.
+        9. Do not use English sentences.
+        10. Use proper {language} script.
 
     Generate now:
     
     """
     return prompt
-
-
-def generate_post(headline, intent, platform, platform_plan, context = None, source = None):
-    prompt = build_prompt(
-
-        headline, intent, platform, platform_plan, context, source
-
-    )
-    response = requests.post (
-
-        OLLAMA_URL,
-
-        json={
-            "model" : MODEL_NAME,
-            "prompt" : prompt,
-            "stream" : False
-        }
-    )
-
-    if response.status_code != 200:
-        return "LLM Generation Failed."
-
-
-
-    return response.json()["response"].strip()        

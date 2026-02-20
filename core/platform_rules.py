@@ -2,7 +2,7 @@ PLATFORM_RULES = {
     "X" : {
         "max_length": 200,
         "tone_bias": "assertive",
-        "hashtags": (0,2)
+        "hashtags": (2,3)
     },
 
     "Instagram" :{
@@ -14,12 +14,12 @@ PLATFORM_RULES = {
     "Facebook" : {
         "max_length" : 500,
         "tone_bias" : "neutral",
-        "hashtags" : (0,3)
+        "hashtags" : (2,3)
     },
 
     "Linkedin" : {
         "max_length": 700,
         "tone_bias" : "professional",
-        "hashtags" : (0,3)
+        "hashtags" : (2,3)
     }
 }
